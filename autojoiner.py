@@ -1,25 +1,37 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
+from sys import argv 
+import time
 
+
+script, email, password = argv
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 
 driver = webdriver.Chrome(PATH)
+
 driver.get("https://teams.microsoft.com")
 
+def try_locating_element(id):
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, id))
+        )
+    except:
+        print("Nie zlokalizowano")
+        driver.quit()
 
-wait  = WebDriverWait(driver, 100).until(EC.title_is('Sign in to your account'))
-login_form = driver.find_element_by_id('i0116')
-login_form.send_keys("k.gorny.981@studms.ug.edu.pl")
+try_locating_element('i0116')
 
-login_button = driver.find_element_by_id('idSIButton9')
-login_button.send_keys(Keys.RETURN)
+login_form = driver.find_element_by_xpath("//input[@id='i0116']")
+login_form.send_keys(email)
+login_form.send_keys(Keys.RETURN)
+
+# try_locating_element('i0118')
+
+password_form = driver.find_element_by_xpath("//input[@id='i0118']")
+password_form.send_keys(password)
 
 
-# password_form = driver.find_element_by_id('i0118')
-# WebDriverWait(driver, 60).until(EC.find_element_by_id('i0118'))
-# WebDriverWait(driver, 60).until(EC.find_element_by_id('idSIButton9'))
-# login_button = driver.find_element_by_id('idSIButton9')
-# login_button.send_keys(Keys.RETURN)
