@@ -15,28 +15,32 @@ driver = webdriver.Chrome(options=options, executable_path=PATH)
 
 driver.get("https://teams.microsoft.com")
 
-def try_locating_element(id):
+
+
+
+def try_locating_element(xpath):
     try:
         WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, id))
+            EC.element_to_be_clickable((By.XPATH, xpath))
         )
     except:
         print("Nie zlokalizowano")
         driver.quit()
 
-try_locating_element("//input[@id='i0116']")
-login_form = driver.find_element_by_xpath("//input[@id='i0116']")
-login_form.send_keys(email,Keys.RETURN)
+def fill_and_move_to_the_next_step(driver, xpath, form_info):
+    try_locating_element(xpath)
+    form = driver.find_element_by_xpath(xpath)
+    form.send_keys(form_info, Keys.RETURN)
 
+#fill email field
+fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", email)
 
-try_locating_element("//input[@id='i0118']")
-password_form = driver.find_element_by_xpath("//input[@id='i0118']")
-password_form.send_keys(password, Keys.RETURN)
-# password_form.send_keys(Keys.RETURN)
+#fill password field
+fill_and_move_to_the_next_step(driver, "//input[@id='i0118']", password)
 
-try_locating_element("//a[@class='use-app-lnk']")
-use_web_app = driver.find_element_by_xpath("//a[@class='use-app-lnk']")
-use_web_app.send_keys(Keys.RETURN)
+#use website insted of app
+fill_and_move_to_the_next_step(driver, "//a[@class='use-app-lnk']", '')
+
 
 
 
