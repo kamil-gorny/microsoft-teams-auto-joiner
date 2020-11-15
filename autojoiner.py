@@ -4,8 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from sys import argv 
-import time
-
+from datetime import datetime
 
 script, email, password = argv
 PATH = "C:\Program Files (x86)\chromedriver.exe"
@@ -26,11 +25,20 @@ def try_locating_element(xpath):
     except:
         print("Nie zlokalizowano")
         driver.quit()
-
+    
 def fill_and_move_to_the_next_step(driver, xpath, form_info):
     try_locating_element(xpath)
     form = driver.find_element_by_xpath(xpath)
     form.send_keys(form_info, Keys.RETURN)
+
+def get_teams(driver):
+    try_locating_element("//div[@class='team-card']")
+    teams_elements = driver.find_elements_by_class_name('team-name-text')
+    teams = []
+    for element in teams_elements:
+        teams.append(element.get_attribute('innerHTML'))
+    return teams 
+
 
 #fill email field
 fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", email)
@@ -40,6 +48,10 @@ fill_and_move_to_the_next_step(driver, "//input[@id='i0118']", password)
 
 #use website insted of app
 fill_and_move_to_the_next_step(driver, "//a[@class='use-app-lnk']", '')
+
+for element in get_teams(driver):
+    print(element)
+
 
 
 
