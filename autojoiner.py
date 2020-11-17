@@ -5,18 +5,25 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from sys import argv 
 from datetime import datetime
+import time
 
-script, email, password = argv
+# script, email, password = argv
 PATH = "C:\Program Files (x86)\chromedriver.exe"
-options = webdriver.ChromeOptions() 
+options = webdriver.ChromeOptions()
+# options.headless = True 
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
 driver = webdriver.Chrome(options=options, executable_path=PATH)
 
 driver.get("https://teams.microsoft.com")
 
-
-
-
+def display_welcome_screen():
+    txt = open('autojoiner.txt', encoding="utf-8")
+    print("---------------------------------------------------------------------------------------------------------------")
+    print(txt.read())
+    print("---------------------------------------------------------------------------------------------------------------")
+    print("\t\t\t\tWitaj w programie Microsoft Teams Auto Joiner")
+    print("---------------------------------------------------------------------------------------------------------------")
+    
 def try_locating_element(xpath):
     try:
         WebDriverWait(driver, 10).until(
@@ -39,7 +46,9 @@ def get_teams(driver):
         teams.append(element.get_attribute('innerHTML'))
     return teams 
 
-
+display_welcome_screen()
+email = input("Podaj email do platformy: ")
+password = input("Podaj haslo: ")
 #fill email field
 fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", email)
 
@@ -53,8 +62,12 @@ for element in get_teams(driver):
     print(element)
 
 
+# class Team():
+#     def __init__(self, team_name, start_time_window):
+#         self.team_name = team_name
 
-
+# team_1 = Team(get_teams(driver)[0])
+# print(team_1.team_name)
 
 
 
