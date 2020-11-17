@@ -31,7 +31,7 @@ def try_locating_element(xpath):
         )
     except:
         print("Nie zlokalizowano")
-        driver.quit()
+        # driver.quit()
     
 def fill_and_move_to_the_next_step(driver, xpath, form_info):
     try_locating_element(xpath)
@@ -56,7 +56,7 @@ fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", email)
 fill_and_move_to_the_next_step(driver, "//input[@id='i0118']", password)
 
 #use website insted of app
-fill_and_move_to_the_next_step(driver, "//a[@class='use-app-lnk']", '')
+# fill_and_move_to_the_next_step(driver, "//a[@class='use-app-lnk']", '')
 
 for element in get_teams(driver):
     print(element)
