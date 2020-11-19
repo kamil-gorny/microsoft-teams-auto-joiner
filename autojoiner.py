@@ -6,6 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from sys import argv 
 from datetime import datetime
 import time
+from consolemenu import * 
+from consolemenu.items import *
 
 # script, email, password = argv
 PATH = "C:\Program Files (x86)\chromedriver.exe"
@@ -17,13 +19,25 @@ driver = webdriver.Chrome(options=options, executable_path=PATH)
 driver.get("https://teams.microsoft.com")
 
 def display_welcome_screen():
-    txt = open('autojoiner.txt', encoding="utf-8")
+    
     print("---------------------------------------------------------------------------------------------------------------")
-    print(txt.read())
+    # print(txt.read())
     print("---------------------------------------------------------------------------------------------------------------")
     print("\t\t\t\tWitaj w programie Microsoft Teams Auto Joiner")
     print("---------------------------------------------------------------------------------------------------------------")
+def enter_credentials():
     
+    print("siurek")
+    time.sleep(10)
+def display_menu():
+    txt = open('autojoiner.txt', 'r', encoding='utf-8')
+    menu = ConsoleMenu(txt.read(), "")
+    menu_item = MenuItem("Wprowadź dane do logowania")
+    function_item = FunctionItem("Zaplanuj zajęcia", enter_credentials, "")
+    menu.append_item(menu_item)
+    menu.append_item(function_item)
+    menu.show()
+
 def try_locating_element(xpath):
     try:
         WebDriverWait(driver, 10).until(
@@ -32,7 +46,7 @@ def try_locating_element(xpath):
     except:
         print("Nie zlokalizowano")
         # driver.quit()
-    
+
 def fill_and_move_to_the_next_step(driver, xpath, form_info):
     try_locating_element(xpath)
     form = driver.find_element_by_xpath(xpath)
@@ -46,9 +60,10 @@ def get_teams(driver):
         teams.append(element.get_attribute('innerHTML'))
     return teams 
 
-display_welcome_screen()
-email = input("Podaj email do platformy: ")
-password = input("Podaj haslo: ")
+# display_welcome_screen()
+display_menu()
+# email = input("Podaj email do platformy: ")
+# password = input("Podaj haslo: ")
 #fill email field
 fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", email)
 
