@@ -9,6 +9,7 @@ import time
 from consolemenu import * 
 from consolemenu.items import *
 import json
+import threading
 
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 options = webdriver.ChromeOptions()
@@ -59,11 +60,9 @@ def get_teams(driver):
         teams.append(element.get_attribute('innerHTML'))
     return teams 
 
+menu_thread = threading.Thread(target=display_menu)
+menu_thread.start()
 
-display_menu()
-# email = input("Podaj email do platformy: ")
-# password = input("Podaj haslo: ")
-#fill email field
 fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", "kamil")
 
 #fill password field
@@ -72,16 +71,12 @@ fill_and_move_to_the_next_step(driver, "//input[@id='i0118']","pass")
 #use website insted of app
 # fill_and_move_to_the_next_step(driver, "//a[@class='use-app-lnk']", '')
 
-for element in get_teams(driver):
-    print(element)
-
-
-# class Team():
-#     def __init__(self, team_name, start_time_window):
-#         self.team_name = team_name
-
-# team_1 = Team(get_teams(driver)[0])
-# print(team_1.team_name)
 
 
 
+
+
+
+
+# input_thread = threading.Thread(target=get_input)
+# input_thread.start()
