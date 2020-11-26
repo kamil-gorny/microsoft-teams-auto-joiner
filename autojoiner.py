@@ -16,9 +16,8 @@ options = webdriver.ChromeOptions()
 # options.headless = True 
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
 driver = webdriver.Chrome(options=options, executable_path=PATH)
-
-
 driver.get("https://teams.microsoft.com")
+
 def enter_credentials():
     login = input("Enter login: ")
     password = input("Enter password: ")
@@ -29,14 +28,37 @@ def enter_credentials():
     f.close()
 
 
-def display_menu():
-    txt = open('autojoiner.txt', 'r', encoding='utf-8')
+def add_meeting():
+    team = input("Enter team name: ")
+    day = input("Enter day of the week: ")
+    time = input("Enter meeting start time: ")
+    chanel = input("Enter chanel name that meeting take place on: ")
+    meeting = {"team_name": team, "day": day, "time": time, "chanel": chanel}
+    f = open('meetings.json', "a")
+    f.write(json.dumps(meeting))
+    f.close
+
+
+def display_classes_register():
+    txt=open('autojoiner.txt', 'r', encoding='utf-8')
     menu = ConsoleMenu(txt.read(), "")
-    menu_item = MenuItem("Enter credentials: ")
-    function_item = FunctionItem("Scheadule meetings: ", enter_credentials, "")
+    add_item = FunctionItem("Add meeting", add_meeting)
+    menu_item = FunctionItem("Show meetings", enter_credentials)
+    function_item = FunctionItem("Edit meetings", enter_credentials)
+    menu.append_item(add_item)
     menu.append_item(menu_item)
     menu.append_item(function_item)
     menu.show()
+
+def display_main_menu():
+    txt = open('autojoiner.txt', 'r', encoding='utf-8')
+    menu = ConsoleMenu(txt.read(), "")
+    menu_item = FunctionItem("Enter credentials: ", enter_credentials)
+    function_item = FunctionItem("Scheadule meetings: ", display_classes_register)
+    menu.append_item(menu_item)
+    menu.append_item(function_item)
+    menu.show()
+
 
 def try_locating_element(xpath):
     try:
@@ -45,12 +67,13 @@ def try_locating_element(xpath):
         )
     except:
         print("Nie zlokalizowano")
-        # driver.quit()
+
 
 def fill_and_move_to_the_next_step(driver, xpath, form_info):
     try_locating_element(xpath)
     form = driver.find_element_by_xpath(xpath)
     form.send_keys(form_info, Keys.RETURN)
+
 
 def get_teams(driver):
     try_locating_element("//div[@class='team-card']")
@@ -60,16 +83,12 @@ def get_teams(driver):
         teams.append(element.get_attribute('innerHTML'))
     return teams 
 
-menu_thread = threading.Thread(target=display_menu)
+menu_thread = threading.Thread(target=display_main_menu)
 menu_thread.start()
 
 fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", "kamil")
-
-#fill password field
 fill_and_move_to_the_next_step(driver, "//input[@id='i0118']","pass")
 
-#use website insted of app
-# fill_and_move_to_the_next_step(driver, "//a[@class='use-app-lnk']", '')
 
 
 
@@ -77,6 +96,3 @@ fill_and_move_to_the_next_step(driver, "//input[@id='i0118']","pass")
 
 
 
-
-# input_thread = threading.Thread(target=get_input)
-# input_thread.start()
