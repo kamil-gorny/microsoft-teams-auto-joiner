@@ -8,32 +8,31 @@ from datetime import datetime
 import time
 from consolemenu import * 
 from consolemenu.items import *
+import json
 
-# script, email, password = argv
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 options = webdriver.ChromeOptions()
 # options.headless = True 
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
 driver = webdriver.Chrome(options=options, executable_path=PATH)
 
-driver.get("https://teams.microsoft.com")
 
-def display_welcome_screen():
-    
-    print("---------------------------------------------------------------------------------------------------------------")
-    # print(txt.read())
-    print("---------------------------------------------------------------------------------------------------------------")
-    print("\t\t\t\tWitaj w programie Microsoft Teams Auto Joiner")
-    print("---------------------------------------------------------------------------------------------------------------")
+driver.get("https://teams.microsoft.com")
 def enter_credentials():
-    
-    print("siurek")
-    time.sleep(10)
+    login = input("Enter login: ")
+    password = input("Enter password: ")
+
+    credentials = {"login": login, "password": password}
+    f = open('credentials.json', "w")
+    f.write(json.dumps(credentials))
+    f.close()
+
+
 def display_menu():
     txt = open('autojoiner.txt', 'r', encoding='utf-8')
     menu = ConsoleMenu(txt.read(), "")
-    menu_item = MenuItem("Wprowadź dane do logowania")
-    function_item = FunctionItem("Zaplanuj zajęcia", enter_credentials, "")
+    menu_item = MenuItem("Enter credentials: ")
+    function_item = FunctionItem("Scheadule meetings: ", enter_credentials, "")
     menu.append_item(menu_item)
     menu.append_item(function_item)
     menu.show()
@@ -60,15 +59,15 @@ def get_teams(driver):
         teams.append(element.get_attribute('innerHTML'))
     return teams 
 
-# display_welcome_screen()
+
 display_menu()
 # email = input("Podaj email do platformy: ")
 # password = input("Podaj haslo: ")
 #fill email field
-fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", email)
+fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", "kamil")
 
 #fill password field
-fill_and_move_to_the_next_step(driver, "//input[@id='i0118']", password)
+fill_and_move_to_the_next_step(driver, "//input[@id='i0118']","pass")
 
 #use website insted of app
 # fill_and_move_to_the_next_step(driver, "//a[@class='use-app-lnk']", '')
