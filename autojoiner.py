@@ -12,11 +12,7 @@ import json
 import threading
 
 PATH = "C:\Program Files (x86)\chromedriver.exe"
-options = webdriver.ChromeOptions()
-# options.headless = True 
-options.add_experimental_option("excludeSwitches", ["enable-logging"])
-driver = webdriver.Chrome(options=options, executable_path=PATH)
-driver.get("https://teams.microsoft.com")
+
 
 def enter_credentials():
     login = input("Enter login: ")
@@ -50,6 +46,7 @@ def display_classes_register():
     menu.append_item(function_item)
     menu.show()
 
+
 def display_main_menu():
     txt = open('autojoiner.txt', 'r', encoding='utf-8')
     menu = ConsoleMenu(txt.read(), "")
@@ -74,7 +71,7 @@ def fill_and_move_to_the_next_step(driver, xpath, form_info):
     form = driver.find_element_by_xpath(xpath)
     form.send_keys(form_info, Keys.RETURN)
 
-
+ 
 def get_teams(driver):
     try_locating_element("//div[@class='team-card']")
     teams_elements = driver.find_elements_by_class_name('team-name-text')
@@ -83,14 +80,22 @@ def get_teams(driver):
         teams.append(element.get_attribute('innerHTML'))
     return teams 
 
-menu_thread = threading.Thread(target=display_main_menu)
-menu_thread.start()
 
-fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", "kamil")
-fill_and_move_to_the_next_step(driver, "//input[@id='i0118']","pass")
+def main():
+    options = webdriver.ChromeOptions()
+    # options.headless = True 
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    driver = webdriver.Chrome(options=options, executable_path=PATH)
+    driver.get("https://teams.microsoft.com")
+
+    menu_thread = threading.Thread(target=display_main_menu)
+    menu_thread.start()
+    fill_and_move_to_the_next_step(driver, "//input[@id='i0116']", "kamil")
+    fill_and_move_to_the_next_step(driver, "//input[@id='i0118']","pass")   
 
 
-
+if __name__ == '__main__':
+    main()
 
 
 
