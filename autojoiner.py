@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -10,6 +8,7 @@ from datetime import datetime
 import time
 from consolemenu import * 
 from consolemenu.items import *
+from consolemenu.screen import Screen
 import json
 import threading
 
@@ -54,6 +53,7 @@ def create_menu_items_for_teams(teams):
         menu.append_item(FunctionItem(team, add_meeting))
     menu.show()
         
+
 def display_main_menu(teams):
     txt = open('autojoiner.txt', 'r', encoding='utf-8')
     menu = ConsoleMenu(txt.read(), "")
