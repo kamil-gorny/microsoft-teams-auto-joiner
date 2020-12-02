@@ -35,7 +35,7 @@ def add_meeting():
     with open('meetings.json', 'a') as f:
         f.write(json.dumps(meeting))
  
- 
+
 def create_menu_items_for_teams(teams):
     with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
         menu = ConsoleMenu('',txt.read())
@@ -89,11 +89,34 @@ def sign_in(driver):
 
 def check_for_credentials():
     with open('credentials.json', 'r') as f:
-        credentials = json.load(f)
-        if credentials['login'] != '' and credentials['password'] != '':
-            return True
-        else:
+        try:
+            credentials = json.load(f)
+            if credentials['login'] != '' and credentials['password'] != '':
+                return True
+            else:
+                return False
+        except:
             return False
+
+
+def display_credentials_menu():
+    with open('autojoiner.txt', 'r', encoding='utf-8') as txt:
+        menu = ConsoleMenu('', txt.read())
+        credentials_menu = FunctionItem('Enter credentials', enter_credentials)
+        menu.append_item(credentials_menu)
+        menu.show()
+
+
+def start_autojoiner(driver):
+    if check_for_credentials():
+        driver.get('https://teams.microsoft.com')
+        sign_in(driver)
+        teams = get_teams(driver)
+        menu_thread = threading.Thread(target=display_main_menu(teams))
+        menu_thread.start()
+    else:
+        display_credentials_menu()
+        start_autojoiner(driver)
 
 
 def main():
@@ -101,12 +124,7 @@ def main():
     # options.headless = True 
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     driver = webdriver.Chrome(options=options, executable_path=PATH)
-    driver.get('https://teams.microsoft.com')
-    if check_for_credentials():
-        sign_in(driver)
-        teams = get_teams(driver)
-    menu_thread = threading.Thread(target=display_main_menu(teams))
-    menu_thread.start()
+    start_autojoiner(driver)
     
 
     
