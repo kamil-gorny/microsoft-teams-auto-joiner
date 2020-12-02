@@ -11,6 +11,7 @@ from consolemenu.items import *
 from consolemenu.screen import Screen
 import json
 import threading
+import asyncio
 
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 
@@ -36,30 +37,32 @@ def add_meeting():
  
 
 def display_classes_register():
-    with open('autojoiner.txt' ,'r', encoding='utf-8') as txt:
-        menu = ConsoleMenu(txt.read(), '')
+    with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
+        menu = ConsoleMenu("", txt.read())
         add_item = FunctionItem('Add meeting', add_meeting)
         menu_item = FunctionItem('Show meetings', enter_credentials)
         function_item = FunctionItem('Edit meetings', enter_credentials)
         menu.append_item(add_item)
         menu.append_item(menu_item)
         menu.append_item(function_item)
-        menu.show()
+    return menu 
 
 
 def create_menu_items_for_teams(teams):
-    with open('autojoiner.txt', 'r', encoding='utf-8') as txt:
-        menu = ConsoleMenu(txt.read(),'')
+    with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
+        menu = ConsoleMenu('',txt.read())
         for team in teams:
             menu.append_item(FunctionItem(team, add_meeting))
-        menu.show()
+        # clear_terminal()
+    return menu
             
 
 def display_main_menu(teams):
-    with open('autojoiner.txt', 'r', encoding='utf-8') as txt:
-        menu = ConsoleMenu(txt.read(), '')
+    teams_menu = create_menu_items_for_teams(teams)
+    with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
+        menu = ConsoleMenu('', txt.read())
         menu_item = FunctionItem('Enter credentials ', enter_credentials)
-        function_item = FunctionItem('Scheadule meetings ', create_menu_items_for_teams, args=[teams])
+        function_item = SubmenuItem('Scheadule meetings ', teams_menu, menu=menu)
         menu.append_item(menu_item)
         menu.append_item(function_item)
         menu.show()
@@ -81,7 +84,7 @@ def fill_and_move_to_the_next_step(driver, xpath, form_info):
 
  
 def get_teams(driver):
-    try_locating_element('//div[@class='team-card']', driver)
+    try_locating_element("//div[@class='team-card']", driver)
     teams_elements = driver.find_elements_by_class_name('team-name-text')
     teams = []
     for element in teams_elements:
@@ -92,8 +95,8 @@ def get_teams(driver):
 def sign_in(driver):
     with open('credentials.json', 'r') as f:
         credentials = json.load(f)
-        fill_and_move_to_the_next_step(driver,'//input[@id='i0116']', credentials['login'])
-        fill_and_move_to_the_next_step(driver, '//input[@id='i0118']',credentials['password'])
+        fill_and_move_to_the_next_step(driver,"//input[@id='i0116']", credentials['login'])
+        fill_and_move_to_the_next_step(driver, "//input[@id='i0118']",credentials['password'])
         
 
 def check_for_credentials():
@@ -116,6 +119,7 @@ def main():
         teams = get_teams(driver)
     menu_thread = threading.Thread(target=display_main_menu(teams))
     menu_thread.start()
+    
 
     
 if __name__ == '__main__':
