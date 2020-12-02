@@ -35,19 +35,7 @@ def add_meeting():
     with open('meetings.json', 'a') as f:
         f.write(json.dumps(meeting))
  
-
-def display_classes_register():
-    with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
-        menu = ConsoleMenu("", txt.read())
-        add_item = FunctionItem('Add meeting', add_meeting)
-        menu_item = FunctionItem('Show meetings', enter_credentials)
-        function_item = FunctionItem('Edit meetings', enter_credentials)
-        menu.append_item(add_item)
-        menu.append_item(menu_item)
-        menu.append_item(function_item)
-    return menu 
-
-
+ 
 def create_menu_items_for_teams(teams):
     with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
         menu = ConsoleMenu('',txt.read())
