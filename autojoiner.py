@@ -3,7 +3,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from sys import argv 
 from datetime import datetime
 import time
 from consolemenu import * 
@@ -11,7 +10,8 @@ from consolemenu.items import *
 from consolemenu.screen import Screen
 import json
 import threading
-import asyncio
+
+
 
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 
@@ -25,9 +25,8 @@ def enter_credentials():
         f.write(json.dumps(credentials))
  
 
-
-def add_meeting():
-    team = input('Enter team name: ')
+def add_meeting(team):
+    print(f"Enter info for {team}")
     day = input('Enter day of the week: ')
     time = input('Enter meeting start time: ')
     chanel = input('Enter chanel name that meeting take place on: ')
@@ -40,8 +39,7 @@ def create_menu_items_for_teams(teams):
     with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
         menu = ConsoleMenu('',txt.read())
         for team in teams:
-            menu.append_item(FunctionItem(team, add_meeting))
-        # clear_terminal()
+            menu.append_item(FunctionItem(team, add_meeting, args=[team]))
     return menu
             
 
@@ -121,13 +119,12 @@ def start_autojoiner(driver):
 
 def main():
     options = webdriver.ChromeOptions()
-    # options.headless = True 
+    options.headless = True 
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     driver = webdriver.Chrome(options=options, executable_path=PATH)
     start_autojoiner(driver)
     
-
-    
+ 
 if __name__ == '__main__':
     main()
 
