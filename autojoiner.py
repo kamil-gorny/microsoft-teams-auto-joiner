@@ -10,6 +10,7 @@ from consolemenu.items import *
 from consolemenu.screen import Screen
 import json
 import threading
+import os
 
 
 
@@ -23,17 +24,29 @@ def enter_credentials():
     with open('credentials.json', 'w') as f:
         f = open('credentials.json', 'w')
         f.write(json.dumps(credentials))
- 
+
+def write_json(data, filename='meetings.json'):
+    with open(filename, 'w') as f:
+        json.dump(data, f) 
 
 def add_meeting(team):
     print(f"Enter info for {team}")
     day = input('Enter day of the week: ')
     time = input('Enter meeting start time: ')
     chanel = input('Enter chanel name that meeting take place on: ')
-    meeting = {'team_name': team, 'day': day, 'time': time, 'chanel': chanel}
+    with open('meetings.json') as f:
+        data = json.load(f)
+        temp = data["meetings"]
+        meeting = {"team_name": team, "day": day, "time": time, "chanel": chanel}
+        temp.append(meeting)
+    write_json(data)
+
+    
+def fill_empty_meetings(team):
     with open('meetings.json', 'a') as f:
-        f.write(json.dumps(meeting))
- 
+        data = {}
+        data['meetings'] = []
+        f.write(json.dumps(data))
 
 def create_menu_items_for_teams(teams):
     with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
@@ -123,7 +136,7 @@ def main():
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     driver = webdriver.Chrome(options=options, executable_path=PATH)
     start_autojoiner(driver)
-    
+    time.sleep(1)
  
 if __name__ == '__main__':
     main()
