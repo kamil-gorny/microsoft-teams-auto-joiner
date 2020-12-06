@@ -28,9 +28,16 @@ def enter_credentials():
 def write_json(data, filename='meetings.json'):
     with open(filename, 'w') as f:
         json.dump(data, f) 
-
+        
+def fill_empty_meetings(team):
+    with open('meetings.json', 'a') as f:
+        data = {}
+        data['meetings'] = []
+        f.write(json.dumps(data))
 
 def add_meeting(team):
+    if os.stat("meetings.json").st_size==0:
+        fill_empty_meetings(team)
     with open('meetings.json') as f:
         data = json.load(f)
         temp = data["meetings"]
@@ -63,11 +70,7 @@ def add_meeting(team):
             write_json(data)
 
     
-def fill_empty_meetings(team):
-    with open('meetings.json', 'a') as f:
-        data = {}
-        data['meetings'] = []
-        f.write(json.dumps(data))
+
 
 def create_menu_items_for_teams(teams):
     with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
