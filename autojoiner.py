@@ -133,16 +133,6 @@ def check_for_credentials():
         except:
             return False
 
-def check_for_teams():
-        with open('teams.txt', 'r') as f:
-            try:
-                if os.stat("teams.txt").st_size==0:
-                    return False
-                else:
-                    return True
-
-            except:
-                return False
 
 def display_credentials_menu():
     with open('autojoiner.txt', 'r', encoding='utf-8') as txt:
@@ -156,14 +146,10 @@ def start_autojoiner(driver):
     if check_for_credentials():
         driver.get('https://teams.microsoft.com')
         sign_in(driver)
-        if check_for_teams():
-            teams = get_teams(driver)
-        else:
-            with open("teams.txt",'w') as f:
-                f.write(teams)
-            menu_thread = threading.Thread(target=display_main_menu(teams))
-            menu_thread.start()
-    else if:
+        teams = get_teams(driver)
+        menu_thread = threading.Thread(target=display_main_menu(teams))
+        menu_thread.start()
+    else:
         display_credentials_menu()
         start_autojoiner(driver)
 
