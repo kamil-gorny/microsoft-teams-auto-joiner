@@ -38,40 +38,18 @@ def fill_empty_meetings(team):
 def add_meeting(team):
     if os.stat("meetings.json").st_size==0:
         fill_empty_meetings(team)
+    print(f"Enter info for {team}")
+    day = input('Enter day of the week: ')
+    time = input('Enter meeting start time: ')
+    chanel = input('Enter chanel name that meeting take place on: ')
     with open('meetings.json') as f:
         data = json.load(f)
         temp = data["meetings"]
-    for el in temp:
-        if el["team_name"] == team:
-            print(f"Meeting for {el['team_name']} already exist it is scheduled on {el['day']} at {el['time']} on {el['chanel']} chanel")
-            edit_flag = input("What do you want to do with it?(Edit/Remove/Leave)")
-            if edit_flag == 'Edit':
-                day = input('Enter day of the week: ')
-                time = input('Enter meeting start time: ')
-                chanel = input('Enter chanel name that meeting take place on: ')
-                el["team_name"] = team
-                el["day"] = day
-                el["time"] = time
-                el["chanel"] = chanel 
-                write_json(data)
-            elif edit_flag == 'Remove':
-                temp.remove(el)
-                write_json(data)
-        else:
-            print(f"Enter info for {team}")
-            day = input('Enter day of the week: ')
-            time = input('Enter meeting start time: ')
-            chanel = input('Enter chanel name that meeting take place on: ')
-            with open('meetings.json') as f:
-                data = json.load(f)
-                temp = data["meetings"]
-                meeting = {"team_name": team, "day": day, "time": time, "chanel": chanel}
-                temp.append(meeting)
-            write_json(data)
+        meeting = {"team_name": team, "day": day, "time": time, "chanel": chanel}
+        temp.append(meeting)
+        write_json(data)
 
     
-
-
 def create_menu_items_for_teams(teams):
     with open('autojoiner.txt', 'r', encoding="utf-8") as txt:
         menu = ConsoleMenu('',txt.read())
