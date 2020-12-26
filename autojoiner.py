@@ -47,18 +47,18 @@ def add_meeting(team):
                 print(f'There is meeting scheduled on {el["day"]} at {el["time"]} on chanel {el["chanel"]} already')
                 edit = input('What would you like to do with it (Edit/Remove/Leave):')
                 if edit.lower() == "edit":
+                    temp.remove(el)
                     print(f"Edit info for {team}")
                     day = input('Enter day of the week: ')
                     time = input('Enter meeting start time: ')
                     chanel = input('Enter chanel name that meeting take place on: ')
                     with open('meetings.json') as f:
-                        data = json.load(f)
-                        temp = data["meetings"]
                         meeting = {"team_name": team, "day": day, "time": time, "chanel": chanel}
                         temp.append(meeting)
                         write_json(data)
                 elif edit.lower() == "remove":
                     temp.remove(el)
+                    write_json(data)
                 elif edit.lower() == "leave":
                     pass
                 else:
@@ -69,8 +69,6 @@ def add_meeting(team):
                 time = input('Enter meeting start time: ')
                 chanel = input('Enter chanel name that meeting take place on: ')
                 with open('meetings.json') as f:
-                    data = json.load(f)
-                    temp = data["meetings"]
                     meeting = {"team_name": team, "day": day, "time": time, "chanel": chanel}
                     temp.append(meeting)
                     write_json(data)
@@ -97,7 +95,7 @@ def display_main_menu(teams):
 
 def try_locating_element(xpath, driver):
     try:
-        WebDriverWait(driver, 10).until(
+        WebDriverWait(driver, 200).until(
             EC.element_to_be_clickable((By.XPATH, xpath))
         )
     except:
