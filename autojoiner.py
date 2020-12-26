@@ -11,6 +11,8 @@ from consolemenu.screen import Screen
 import json
 import threading
 import os
+import schedule 
+
 
 
 
@@ -143,20 +145,38 @@ def display_credentials_menu():
         menu.append_item(credentials_menu)
         menu.show()
 
+def job():
+    quit()
+
+
+def schedule_tasks(day, time):
+    getattr(schedule.every(), day).at(time).do(job)
+
+
+def run_tasks_listening():
+    schedule_tasks('saturday', '17:30')
+    while True:
+        schedule.run_pending()
+    
+
 
 def start_autojoiner(driver):
     if check_for_credentials():
-        driver.get('https://teams.microsoft.com')
-        sign_in(driver)
-        teams = get_teams(driver)
-        menu_thread = threading.Thread(target=display_main_menu(teams))
-        menu_thread.start()
+        
+    
+    driver.get('https://teams.microsoft.com')
+    sign_in(driver)
+    teams = get_teams(driver)
+    menu_thread = threading.Thread(target=display_main_menu(teams))
+    menu_thread.start()
+        
     else:
         display_credentials_menu()
         start_autojoiner(driver)
 
-
 def main():
+    schedule_thread = threading.Thread(target=run_tasks_listening())
+    schedule_thread.start()
     options = webdriver.ChromeOptions()
     options.headless = True 
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -164,6 +184,9 @@ def main():
     start_autojoiner(driver)
     time.sleep(1)
  
+
+
+
 if __name__ == '__main__':
     main()
 
